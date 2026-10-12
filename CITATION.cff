@@ -1,0 +1,30 @@
+# Citation metadata for this repository.
+# It currently describes the repository's first paper (The Prime Staircase);
+# reorganize (per-paper files) as more papers are added.
+cff-version: 1.2.0
+message: "If you use this work in your research, please cite it as below."
+title: "The Prime Staircase: Superexponential Growth along the Diagonal of the Hierarchy of Higher-Order Primes"
+authors:
+  - family-names: Tapiador
+    given-names: Justo
+    affiliation: Universidad de Alicante
+type: unpublished
+year: 2026
+keywords:
+  - prime numbers
+  - prime-indexed primes
+  - higher-order primes
+  - primeth recurrence
+  - asymptotic growth
+  - OEIS
+repository: "https://github.com/Justo-Tapiador/maths"
+url: "https://github.com/Justo-Tapiador/maths/blob/main/prime-staircase/prime_staircase.pdf"
+abstract: "Study of the diagonal d_k = f^(k+1)(k) of the hierarchy of
+  higher-order primes: a master formula for its growth, log d_k ~ k log k ~ p_k,
+  structural theorems (order-of-primeness ladder, orbit crossings), exact
+  computation of d_1..d_10 and rigorous brackets for d_11..d_14."
+# When a DOI is assigned (e.g. automatically by Zenodo after a tagged
+# release), uncomment and fill in:
+# identifiers:
+#   - type: doi
+#     value: 10.5281/zenodo.XXXXXXX
