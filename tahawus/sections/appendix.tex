@@ -1,0 +1,175 @@
+% =====================================================================
+\appendix
+% =====================================================================
+
+\section{Deferred elementary arguments}\label{sec:appendix}
+% =====================================================================
+
+Three small calculus facts were quoted in the body; we prove them
+here. They share a theme: one-line monotonicity arguments at an
+interior critical point.
+
+\begin{lemma}\label{lem:u1}
+The function $u_{1}(x) := x\bigl(1 + 2\ln x\bigr)$ satisfies
+$u_{1}(x) \le 1$ on $(0, 1]$, with equality only at $x = 1$.
+\end{lemma}
+
+\begin{proof}
+$u_{1}'(x) = 3 + 2\ln x$ vanishes only at $x_{0} = \ee^{-3/2}$; $u_{1}$
+decreases on $(0, x_{0})$ and increases on $(x_{0}, 1]$. Hence on
+$(0,1]$ its maximum is $\max\{u_{1}(x_{0}),\, u_{1}(1)\} =
+\max\{-2\ee^{-3/2},\, 1\} = 1$, attained only at $x = 1$.
+\end{proof}
+
+\begin{lemma}\label{lem:q}
+For $s > 0$, with $h(s) := (s-1)\ee^{-s}$:
+\begin{enumerate}[label=\textup{(\roman*)}, leftmargin=2.2em]
+\item $h(s) > -1$, and more precisely $h$ increases from $-1$ (at
+$s \to 0^{+}$) to $h(2) = \ee^{-2}$ and then decreases back toward
+$0^{+}$; in particular $h(s) \in (-1,\, \ee^{-2}]$;
+\item $q(s) := (s-1)^{2}\ee^{-s} < 1$ for all $s > 0$, with
+$\sup_{s>0} q(s) = \lim_{s \to 0^{+}} q(s) = 1$ not attained.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(i) $h'(s) = (2-s)\ee^{-s}$: positive on $(0,2)$, negative on
+$(2,\infty)$. So $h$ is strictly increasing from
+$\lim_{s\to0^{+}} h(s) = -1$ to $h(2) = \ee^{-2}$, then strictly
+decreasing with $\lim_{s\to\infty} h(s) = 0$; the range is
+$(-1, \ee^{-2}]$.
+
+(ii) $q'(s) = (s-1)(2-s)\ee^{-s}$: $q$ decreases on $(0,1)$, increases
+on $(1,2)$, decreases on $(2,\infty)$, with $q(0^{+}) = 1$,
+$q(1) = 0$, $q(2) = \ee^{-2} < 1$, $q(\infty) = 0$. Hence
+$\sup_{s > 0} q = \max\{q(0^{+}), q(2)\} = 1$, approached only as
+$s \to 0^{+}$; for every $s > 0$, $q(s) < 1$.
+\end{proof}
+
+\begin{lemma}\label{lem:logsquare}
+$(\ln x)^{2} < x$ for every $x \ge 1$.
+\end{lemma}
+
+\begin{proof}
+Let $k(x) := x - 2\ln x$; then $k'(x) = 1 - 2/x$ vanishes only at
+$x = 2$, and $k(2) = 2 - 2\ln2 > 0$ (as $\ln 2 < 1$) with
+$k \to \infty$ at both ends of $(0,\infty)$, so $k > 0$, i.e.\
+$2 \ln x < x$. Now $g(x) := x - (\ln x)^{2}$ has
+$g(1) = 1 > 0$ and $g'(x) = 1 - 2\ln x / x > 0$ by what was just
+proved, so $g$ is increasing and positive on $[1,\infty)$.
+\end{proof}
+
+% =====================================================================
+\section{Computational notes}\label{sec:computational}
+% =====================================================================
+
+All numerical statements in the paper were produced by two Python
+scripts, \texttt{tahawus\_research.py} (numbers) and
+\texttt{tahawus\_figures.py} (figures), delivered alongside this
+article; they use \texttt{mpmath} \cite{mpmath} at $80$ significant
+digits and \texttt{sympy} for the exact symbolic checks. The core
+evaluator brackets the root of $x^{x} = yx + 1$ by bisection and
+polishes it with Newton, robust down to the far left tail, where the
+bisection is performed in $t = \ln x$:
+
+\begin{small}
+\begin{verbatim}
+def f(x):  return (x**x - 1)/x
+
+def T(y):
+    y = mp.mpf(y)
+    if y > 0:
+        lo, hi = mp.mpf(1), mp.mpf(2)      # root in [1, inf)
+        while f(hi) < y: hi *= 2
+    elif y > -5:
+        lo, hi = mp.mpf('1e-40'), mp.mpf(1)  # root in (0, 1]
+    else:                                   # bisect in t = ln x
+        tlo, thi = y - 2, mp.mpf(0)
+        g = lambda t: (mp.e**(t*mp.e**t) - 1)*mp.e**(-t) - y
+        for _ in range(300):
+            tm = (tlo + thi)/2
+            if g(tm) < 0: tlo = tm
+            else:          thi = tm
+        return mp.e**((tlo + thi)/2)
+    for _ in range(400):                    # bisection ...
+        mid = (lo + hi)/2
+        if f(mid) < y: lo = mid
+        else:           hi = mid
+    return mp.findroot(lambda x: x**x - y*x - 1,   # ... + Newton
+                       (lo, hi), tol=mp.mpf(10)**-70)
+\end{verbatim}
+\end{small}
+
+The Maclaurin coefficients of Theorem~\ref{thm:maclaurin} are exact
+rational numbers computed by the Lagrange--B\"urmann recurrence
+\eqref{eq:lagrange} in exact arithmetic ($\mathrm{Fraction}$), with
+$\varphi(u) = f(1+u)/u$ obtained by exponentiating
+$E(u) = (1+u)\ln(1+u)$ by convolution, dividing by $1+u$, and
+reverting:
+
+\begin{small}
+\begin{verbatim}
+E = [Fr(0)]*(N+1); E[1] = Fr(1)            # (1+u)ln(1+u)
+for k in range(2, N+1): E[k] = Fr((-1)**k, k*(k-1))
+B = [Fr(0)]*(N+1); B[0] = Fr(1)            # exp(E), by convolutions
+for k in range(1, N+1):
+    B[k] = sum(i*E[i]*B[k-i] for i in range(1, k+1)) / k
+phi = [F[k+1] for k in range(N)]           # phi = f(1+u)/u
+inv = [Fr(1)]                              # 1/phi, by reversion
+for m in range(1, N):
+    inv.append(-sum(phi[i]*inv[m-i] for i in range(1, m+1)))
+for n in range(1, N+1):                    # Lagrange-Buermann
+    d_n = poly_pow(inv, n, trunc=n-1)[n-1] / n   # phi^{-n} at u^{n-1}
+\end{verbatim}
+\end{small}
+
+\noindent The resulting $d_{1}, \ldots, d_{60}$ are those displayed in
+\eqref{eq:maclaurin} (and twenty-four further exact values, used for
+the radius analysis). The radius determination of
+Subsection~\ref{subsec:radius} combines a least-squares fit of the
+conjugate-pair recurrence $d_{n+2} = S d_{n+1} - P d_{n}$ with a direct
+solve for the critical points:
+
+\begin{small}
+\begin{verbatim}
+G = lambda x: x**(x+1)*(mp.log(x) + 1 - 1/x) + 1   # = x^2 f'(x)
+# (1) fit (S, P) to the 60 exact d_n  ->  singularity y1 = 1/lambda
+# (2) continue the inverse branch along arg(y1), then Newton on G:
+xc = mp.findroot(G, (seed, seed*1.04))     # conjugate pair of roots
+yc = (mp.e**(xc*mp.log(xc)) - 1)/xc        # critical value f(xc)
+R  = abs(yc)                               # 0.6526100448447448
+\end{verbatim}
+\end{small}
+
+\noindent The six figures are matplotlib vector PDFs (serif fonts,
+identical evaluator); the scripts are reproduced in the project
+directory together with the verification harness that re-checks every
+numerical claim made in the text (OEIS digit strings included).
+Table~\ref{tab:constants} collects the constants to sixty digits.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\caption{Constants of the Tahawus constellation, verified to eighty
+significant digits (shown truncated); see also
+Table~\ref{tab:values}.}
+\label{tab:constants}
+\begin{tabular}{@{}ll@{}}
+\toprule
+constant & value \\
+\midrule
+$\alpha = \Tah(1)$ (A124930) & $1.776775040097054697479730744038756748637411034329296139084374\ldots$ \\
+$\beta = \Tah(-1)$ (A226568) & $0.303659127029966051245018951213222659991199618761172709644170\ldots$ \\
+$\delta$ (fixed point) & $2.22883310327811897061876155467799524418964882764487641840\ldots$ \\
+$v = 1/\beta - 1$ (A085846) & $2.293166287411861031508028291250805864372257290327121248537710\ldots$ \\
+$1/\beta$ (A169862) & $3.293166287411861031508028291250805864372257290327121248537710\ldots$ \\
+$\upsilon_{2}$ (A144184) & $5.50798565277317825758902629805213873001602466330411\ldots$ \\
+$\Tah(2)$ & $2.16575937062328429055689695855853100768620425410811803694712\ldots$ \\
+$R$ (radius of series) & $0.652610044844744\ldots$ \\
+$\Tah'(\delta)$ & $0.261543559649\ldots$ \\
+$g'(\alpha) = \tfrac{1}{(1+\alpha)(1+\ln\alpha)}$ & $0.2286830163\ldots$ \\
+$(1+\alpha)\ln\alpha$ (tower multiplier) & $1.5960901426\ldots$ \\
+$\ln\alpha$ (multiplier at $0$) & $0.5747999458\ldots$ \\
+\bottomrule
+\end{tabular}
+\end{table}

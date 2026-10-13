@@ -1,0 +1,273 @@
+% =====================================================================
+%  The Tahawus Function: An Extension of the Lambert W Function
+%  ---------------------------------------------------------------
+%  An expanded and rigorous version of the blog post
+%  "Hola, os presento a Tahawus: una extension de la funcion W de
+%  Lambert" (Tardigrados, 2018).
+%
+%  Compile:  tectonic main.tex     (or: pdflatex main.tex, twice)
+%  Structure: main.tex + sections/*.tex + figures/*.pdf
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{amsthm}
+\usepackage{newtxtext,newtxmath}
+\usepackage{geometry}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\definecolor{linkblue}{HTML}{1F5FA8}
+\definecolor{linkdark}{HTML}{7A3B8F}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{adjustbox}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[section]{placeins}
+\usepackage[numbers,sort&compress]{natbib}
+
+\widowpenalty=10000
+\clubpenalty=10000
+\setlength{\parskip}{0pt}
+\setlength{\emergencystretch}{1.5em}
+
+% ---------------- theorem environments ----------------
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ---------------- macros ----------------
+\newcommand{\Tah}{\mathcal{T}}                     % the Tahawus function
+\DeclareMathOperator{\ssqrt}{ssqrt}                % square super root
+\DeclareMathOperator{\Log}{Log}                    % principal logarithm
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\ee}{\mathrm{e}}
+\newcommand{\dd}{\,\mathrm{d}}
+
+% hyperref LAST among content packages
+\usepackage[
+    colorlinks=true,
+    linkcolor=linkblue,
+    citecolor=linkdark,
+    urlcolor=linkblue,
+    bookmarks=true,
+    bookmarksnumbered=true,
+    unicode=true
+]{hyperref}
+\hypersetup{
+    pdftitle={The Tahawus Function: An Extension of the Lambert W Function},
+    pdfauthor={Justo Tapiador García - Universidad de Alicante (UA, Alicante, Spain)},
+    pdfsubject={Real analysis; special functions; transcendental number theory},
+    pdfkeywords={Tahawus function, Lambert W function, tetration, super root,
+                 transcendence, Gelfond-Schneider, fixed point, power tower}
+}
+% url.sty (loaded via hyperref): give URL lines a little stretch
+% so that bibliography lines containing long URLs justify cleanly.
+\Urlmuskip=0mu plus 2mu minus 0.5mu\relax
+
+\begin{document}
+
+% =====================================================================
+%  Contents page (the body starts with the table of contents; the
+%  cover page is generated separately and merged in front).
+% =====================================================================
+\tableofcontents
+\newpage
+
+% =====================================================================
+%  Title block (hand-set; deliberately not \maketitle)
+% =====================================================================
+\begin{center}
+    {\LARGE\bfseries The Tahawus Function:\\[4pt]
+     An Extension of the Lambert \boldmath$W$\unboldmath\ Function}\\[14pt]
+    {\large\itshape The inverse of $x \mapsto (x^{x}-1)/x$, the constant named for
+     a ghost town, and its arithmetic}\\[18pt]
+    {\large \textbf{Justo Tapiador García} \\ \small{Universidad de Alicante \\ (UA, Alicante, Spain)} \\ \thanks{\
+    Personal blog \emph{Tardigrados}:
+    \url{https://tardigrados.wordpress.com}. This article is an expanded,
+    corrected and rigorous version of the author's post
+    \emph{``Hola, os presento a Tahawus: una extensi\'on de la funci\'on $W$
+    de Lambert''} (3 April 2018), available at
+    \url{https://tardigrados.wordpress.com/2018/04/03/hola-os-presento-a-tahawus-una-extension-de-la-funcion-w-de-lambert}.}}\\[8pt]
+    {\large September 27, 2026}
+\end{center}
+
+\vspace{10pt}
+\begin{center}
+\begin{minipage}{0.88\textwidth}
+\small
+\textbf{Abstract.}
+The \emph{Tahawus function} $\Tah$ is the inverse of the map
+$f(x) = (x^{x}-1)/x$. It was introduced---and named, after the
+Adirondack ghost town of Tahawus, New York, where Richard P.~Stanley
+grew up---in a 2018 blog post, as a natural companion of the
+Lambert $W$ function that solves the ``super-quadratic''
+$x^{x} = bx + 1$, the same way $W$ solves $x \ee^{x} = a$. Here we give the
+function a systematic theory. We prove that $f$ is a strictly increasing
+real-analytic bijection $(0,\infty) \to \R$, so that $\Tah \colon \R \to
+(0,\infty)$ is a real-analytic order isomorphism, and we derive a sharp
+``sandwich theorem'': $1 + y < \Tah(y) < \ee^{y}$ on $(-1,0)$ while
+$\Tah(y) < \min(1+y,\ee^{y})$ on $(0,\infty)$, with
+$\Tah(y) \sim \ee^{y}$ as $y \to -\infty$ and
+$\Tah(y) \sim \ln y / \ln\ln y$ as $y \to +\infty$. We completely
+classify the arithmetic of $\Tah$ on rational arguments: for every
+rational $b$, $\Tah(b)$ is either a positive integer (exactly when
+$b = (n^{n}-1)/n$) or a transcendental number, recovering Stanley's
+1989 observation that the \emph{Tahawus constant}
+$\alpha = \Tah(1) = 1.7767750400\ldots$, the unique real root of
+$x^{x} = x + 1$, is transcendental. We further obtain: the exact
+Maclaurin expansion of $\Tah$ (whose quadratic term vanishes), the
+comparison of $\Tah(b)$ with the metallic-ratio family
+$\varphi_b = (b+\sqrt{b^{2}+4})/2$ (with the unexpected exact
+coincidences $\Tah(0) = \varphi_0 = 1$ and $\Tah(3/2) =
+\varphi_{3/2} = 2$), the negative-integer exact roots
+$x = -n$ of the super-quadratic family, a unique attracting fixed
+point $\delta = 2.2288\ldots$ of $\Tah$ (root of $x^{x} = x^{2}+1$,
+transcendental), a precise correction of the original post's infinite-tower
+identity, the asymptotic law $\Tah(y) - \ee^{W(\ln y)} \to 1$, and a
+numerical determination of the radius of convergence
+$R \approx 0.65261$ of the Maclaurin series. The five constants of the
+Tahawus constellation---$\Tah(1)$, $\Tah(-1)$ and their three
+companions---are identified in the On-Line Encyclopedia of Integer
+Sequences, and all
+numerical claims are verified to 70 significant digits.
+
+\vspace{8pt}
+\textbf{2020 Mathematics Subject Classification.}
+Primary 26A18; Secondary 33E30, 11J81, 37C25, 65H05.\\[2pt]
+\textbf{Keywords.} Tahawus function, Lambert $W$, tetration, super
+square root, super-quadratic, Gelfond--Schneider, transcendence,
+fixed point, infinite power tower, Maclaurin series, interval-free
+analytic inequalities.
+\end{minipage}
+\end{center}
+
+\vspace{14pt}
+
+\input{sections/s1_intro}
+\input{sections/s2_core}
+\input{sections/s3_local}
+\input{sections/s4_values}
+\input{sections/s5_dynamics}
+\input{sections/s6_asymptotics}
+\input{sections/appendix}
+
+% =====================================================================
+\begin{thebibliography}{17}\small
+
+\bibitem{blog}
+Tard\'igrados (author's pseudonym).
+\emph{Hola, os presento a Tahawus: una extensi\'on de la funci\'on $W$ de
+Lambert}. Blog \emph{Tard\'igrados}, 3 April 2018.
+\url{https://tardigrados.wordpress.com/2018/04/03/hola-os-presento-a-tahawus-una-extension-de-la-funcion-w-de-lambert}.
+
+\bibitem{stanley89}
+R.~P. Stanley.
+\emph{A transcendental number?: Quickie 88-10}.
+In: Mathematical Entertainments column (S.~H. Weintraub, ed.),
+\emph{The Mathematical Intelligencer} \textbf{11}, no.~1 (Winter 1989), p.~55.
+
+\bibitem{a124930}
+N.~J.~A. Sloane et al.
+\emph{OEIS A124930: Decimal expansion of the unique positive real root of the
+equation $x^x = x + 1$}. The On-Line Encyclopedia of Integer Sequences,
+2006--2026. \url{https://oeis.org/A124930}.
+
+\bibitem{a226568}
+N.~J.~A. Sloane et al.
+\emph{OEIS A226568: Decimal expansion of the number defined by $x^x + x = 1$}.
+The On-Line Encyclopedia of Integer Sequences, 2013--2026.
+\url{https://oeis.org/A226568}.
+
+\bibitem{a085846}
+N.~J.~A. Sloane et al.
+\emph{OEIS A085846: Decimal expansion of root of $x = (1+1/x)^x$}.
+The On-Line Encyclopedia of Integer Sequences, 2003--2026.
+\url{https://oeis.org/A085846}.
+
+\bibitem{a169862}
+N.~J.~A. Sloane et al.
+\emph{OEIS A169862: Decimal expansion of root of $x^{(x-1)} = (x-1)^x$}.
+The On-Line Encyclopedia of Integer Sequences, 2010--2026.
+\url{https://oeis.org/A169862}.
+
+\bibitem{a144184}
+N.~J.~A. Sloane et al.
+\emph{OEIS A144184}. The On-Line Encyclopedia of Integer Sequences.
+\url{https://oeis.org/A144184}.
+
+\bibitem{corless}
+R.~M. Corless, G.~H. Gonnet, D.~E.~G. Hare, D.~J. Jeffrey, D.~E. Knuth.
+\emph{On the Lambert $W$ function}.
+\emph{Advances in Computational Mathematics} \textbf{5} (1996), 329--359.
+
+\bibitem{mezobaricz}
+I. Mez\H{o}, \'A. Baricz.
+\emph{On the generalization of the Lambert $W$ function}.
+\emph{Transactions of the American Mathematical Society} \textbf{369}
+(2017), 7917--7934.
+
+\bibitem{knoebel}
+R.~Arthur Knoebel.
+\emph{Exponentials reiterated}.
+\emph{American Mathematical Monthly} \textbf{88} (1981), 235--252.
+
+\bibitem{gelfond}
+A.~O. Gelfond.
+\emph{Transcendental and Algebraic Numbers}.
+Dover Publications, New York, 1960. (Gelfond--Schneider theorem, original
+1934 result.)
+
+\bibitem{lord}
+Nick Lord.
+\emph{Two other transcendental numbers obtained by (mis)calculating $e$}.
+\emph{The Mathematical Gazette} \textbf{86}, no.~505 (2002), 103--105.
+
+\bibitem{anghel}
+Nicolae Anghel.
+\emph{Foia\c{s} numbers}.
+\emph{An. \c{S}tiin\c{t}. Univ.\ Ovidius Constan\c{t}a, Ser.\ Mat.}
+\textbf{26}, no.~3 (2018), 21--28.
+
+\bibitem{mactutor}
+J.~J. O'Connor, E.~F. Robertson.
+\emph{Richard Peter Stanley}.
+MacTutor History of Mathematics archive, University of St Andrews.
+\url{https://mathshistory.st-andrews.ac.uk/Biographies/Stanley/}.
+
+\bibitem{wptahawus}
+Wikipedia contributors.
+\emph{Tahawus, New York}.
+Wikipedia, The Free Encyclopedia.
+\url{https://en.wikipedia.org/wiki/Tahawus,_New_York}.
+
+\bibitem{mathworld-sd}
+E.~W. Weisstein.
+\emph{Sophomore's Dream}. From MathWorld---A Wolfram Web Resource.
+\url{https://mathworld.wolfram.com/SophomoresDream.html}.
+
+\bibitem{mpmath}
+F. Johansson et al.
+\emph{mpmath: a Python library for arbitrary-precision floating-point
+arithmetic} (version 1.3).
+\url{https://mpmath.org}.
+
+\end{thebibliography}
+
+\end{document}

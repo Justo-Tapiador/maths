@@ -1,6 +1,9 @@
 # Citation metadata for this repository.
-# It currently describes the repository's first paper (The Prime Staircase);
-# reorganize (per-paper files) as more papers are added.
+# Multi-paper collection: GitHub reads only the ROOT CITATION.cff for its
+# "Cite this repository" button, so this file cites paper #1 (The Prime
+# Staircase), the repository's founding paper. Per-paper BibTeX lives in
+# each paper's folder README. To make the button cite a different paper,
+# edit title/keywords/url/abstract below.
 cff-version: 1.2.0
 message: "If you use this work in your research, please cite it as below."
 title: "The Prime Staircase: Superexponential Growth along the Diagonal of the Hierarchy of Higher-Order Primes"

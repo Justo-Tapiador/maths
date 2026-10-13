@@ -1,0 +1,220 @@
+% =====================================================================
+\section{Introduction}\label{sec:intro}
+% =====================================================================
+
+Every student of algebra meets the quadratic $x^{2} = bx + 1$ early, and
+solves it without effort: its positive root $\varphi_b = (b + \sqrt{b^{2}+4})/2$
+is the one-parameter family that contains the golden ratio
+$\varphi = \varphi_1$. Far fewer students meet the same equation with the
+square replaced by a \emph{tetration} of height two, namely
+\begin{equation}\label{eq:superquad}
+    x^{x} \;=\; b\,x + 1 ,
+\end{equation}
+an equation we shall call, following the original blog post
+\cite{blog}, a \emph{super-quadratic}. The equation looks innocent, but it
+hides a small universe. For $b = 1$ it reads $x^{x} = x + 1$, its unique
+positive solution
+\begin{equation}\label{eq:alpha-def}
+    \alpha \;=\; 1.7767750400970546974797307440387567486374110343292961390843740\ldots
+\end{equation}
+is now catalogue number \textrm{A124930} in the On-Line Encyclopedia of
+Integer Sequences \cite{a124930}, and it is a \emph{transcendental}
+number, a fact first proved by Richard~P. Stanley in a two-line
+contribution to the \emph{Mathematical Intelligencer} in 1989
+\cite{stanley89}, as a ``Quickie'' problem of the Mathematical
+Entertainments column.
+
+The quadratic formula cannot be imitated here, and the standard escape
+route of modern analysis---the Lambert $W$ function, which solves every
+equation of the form $x\,\ee^{x} = a$---likewise fails. The obstruction,
+which we examine carefully in Section~\ref{sec:background}, is
+self-referential: reducing $x^{x} = bx + 1$ with the substitution that
+inverts $x \mapsto x^{x}$ produces an equation in which the unknown still
+appears, leading only to an \emph{infinite composition} of $W$'s rather
+than a closed form. The present paper is devoted to the object that
+\emph{does} solve \eqref{eq:superquad} for every real $b$ at once: the
+inverse of the map $x \mapsto (x^{x}-1)/x$.
+
+\paragraph{The name.} The function was introduced, informally but with
+correct instincts, in the blog post \cite{blog} under the name
+\emph{Tahawus}. Tahawus (``cloud-splitter'') was a mining village in the
+town of Newcomb, Essex County, New York, in the heart of the Adirondack
+Park: iron was smelted there in the nineteenth century, and titanium
+dioxide was mined there by the National Lead Company from the 1940s
+onwards \cite{wptahawus}. It is now a ghost town. According to the
+MacTutor biography \cite{mactutor}, the family of the young Richard
+Stanley moved to Tahawus in 1946, when his father took a job with the
+National Lead Company, and Stanley lived there---attending a one-room
+schoolhouse---until 1953. The blogger's choice of name honours the
+mathematician who first proved the transcendence of the constant
+\eqref{eq:alpha-def}, by way of the town of his childhood. We keep the
+name, and the constant $\alpha = \Tah(1)$ will accordingly be called the
+\emph{Tahawus constant}.
+
+\paragraph{What is done here.} The blog post announced the function,
+displayed its graph, derived the $W$-composition, and listed a
+fascinating constellation of constants, together with a bold identity
+involving an infinite power tower. This article is a systematically
+expanded version of that post---more extensive, more precise, and with
+all statements proved. Our results, in order of appearance, are as
+follows.
+
+\begin{itemize}[leftmargin=1.6em]
+
+\item \emph{Foundations} (Sections~\ref{sec:constant}--\ref{sec:sandwich}).
+We prove that $f(x) = (x^{x}-1)/x$ is strictly increasing and
+real-analytic on $(0,\infty)$, with limits $-\infty$ and $+\infty$ at the
+endpoints (Theorem~\ref{thm:bijection}). Consequently the
+\emph{Tahawus function} $\Tah := f^{-1}$ is a strictly increasing
+real-analytic bijection $\R \to (0,\infty)$, and \eqref{eq:superquad} has
+the unique positive solution $x = \Tah(b)$. We compute the first
+derivatives at the fixed symmetry point, obtaining the pleasant
+coincidences $\Tah(0) = 1$, $\Tah'(0) = 1$, $\Tah''(0) = 0$.
+
+\item \emph{The sandwich theorem} (Theorem~\ref{thm:sandwich}). The
+exponential $\ee^{y}$ and the line $1+y$---the two most famous
+functions with value $1$ and slope $1$ at the origin---squeeze
+$\Tah$ between them: $1 + y < \Tah(y) < \ee^{y}$ for $-1 < y < 0$, while
+$\Tah(y) < 1 + y < \ee^{y}$ for $y > 0$. Moreover $\Tah(y)/\ee^{y} \to 1$
+as $y \to -\infty$, so the Tahawus function is an ``asymptotic copy'' of
+$\exp$ on the far left, and a sub-exponential, sub-linear object on the
+right. A companion proposition (Proposition~\ref{prop:lipschitz}) shows
+$0 < \Tah'(y) \le 1$ with equality only at the origin: $\Tah$ is
+$1$-Lipschitz.
+
+\item \emph{Arithmetic} (Theorem~\ref{thm:transcendence}). For
+\emph{every} rational $b$, the number $\Tah(b)$ is either a positive
+integer---exactly when $b = (n^{n}-1)/n$ for some $n \in \N$, so that
+$\Tah\!\big(\tfrac{n^{n}-1}{n}\big) = n$---or a transcendental number.
+Stanley's theorem on $\alpha$ and Lord's theorem on the companion
+constant $2.2931\ldots$ \cite{lord} drop out as the two most visible
+cases. Along the way we pin down the exact algebraic values
+$\Tah(3/2) = 2$, $\Tah(\sqrt2 - 2) = \tfrac12$, $\Tah(2\sqrt2 - 4) =
+\tfrac14$, and the whole family they generate.
+
+\item \emph{Local theory} (Section~\ref{sec:maclaurin}). Via
+Lagrange--B\"urmann inversion we obtain the Maclaurin series
+\[
+    \Tah(y) \;=\; 1 + y - \tfrac{1}{2}y^{3} + \tfrac{1}{6}y^{4}
+    + \tfrac{1}{2}y^{5} - \tfrac{49}{120}y^{6} - \cdots ,
+\]
+whose \emph{quadratic term vanishes} (Theorem~\ref{thm:maclaurin}): the
+Tahawus function has second-order contact with its tangent line $1+y$ at
+the origin, a property shared by neither $\ee^{y}$ nor any quadratic
+perturbation of it. We prove $\Tah$ is convex on $(-\infty, 0)$ and
+concave on $(0,\infty)$, determine numerically the radius of convergence
+$R \approx 0.65261$ of the series, locating the responsible pair of
+complex branch points, and we draw the remarkable picture
+(Figure~\ref{fig:slit}) of the image of the negative real axis, a curve
+that spirals into the origin through the rational points
+$(1 - (-1)^{n}n^{-n})/n$.
+
+\item \emph{Comparison with the golden ratio}
+(Theorem~\ref{thm:golden}). For the quadratic pencil the positive root
+is $\varphi_b$; for the super-quadratic it is $\Tah(b)$. The two agree
+\emph{exactly} at $b = 0$ and $b = 3/2$ (both give $1$ and $2$
+respectively---because $n^{n} = n^{2}$ at $n \in \{1,2\}$!), with
+$\Tah(b) > \varphi_b$ in between and $\Tah(b) < \varphi_b$ outside. We
+also exhibit the exact negative-integer roots $x = -n$ of the
+super-quadratic pencil: for instance $x = -1$ solves
+$x^{x} = 2x + 1$ \emph{exactly}, since $(-1)^{-1} = -1$.
+
+\item \emph{Dynamics} (Theorem~\ref{thm:fixedpoint} and
+Section~\ref{sec:tower}). $\Tah$ has a unique fixed point
+$\delta = 2.2288\ldots$, the root of $x^{x} = x^{2}+1$; it is
+transcendental, attracting, and \emph{every} orbit of $\Tah$ converges to
+it monotonically. The self-referential $W$-iteration of the blog post
+converges to $\alpha$ geometrically with a rate we compute in closed
+form. The infinite power tower of the original post, made precise, is
+corrected: the decremented tower converges to $0$, the fixed point
+$\alpha$ being \emph{repelling}.
+
+\item \emph{Asymptotics and curiosities}
+(Sections~\ref{sec:asymptotics}--\ref{sec:curiosities}). We prove
+$\ln \Tah(y) = y - \tfrac{y^{2}}{2}\ee^{y}(1+o(1))$ as $y \to -\infty$
+and, as $y \to +\infty$, both the logarithmic growth law
+$\Tah(y) = \frac{\ln y}{\ln\ln y}\big(1 + \tfrac{\ln\ln\ln y}{\ln\ln y} +
+O((\tfrac{\ln\ln\ln y}{\ln\ln y})^{2})\big)$ and the striking
+$\Tah(y) - \ssqrt(y) \to 1$: at infinity the Tahawus function is a
+square super-root \emph{plus one}. We close with integrals, a table of
+values, a debunked numerology section ($\alpha$ versus $\sqrt\pi$), and
+a list of open problems.
+
+\end{itemize}
+
+The paper is written so that each section can be read almost
+independently; proofs are complete, with three short auxiliary arguments
+deferred to Appendix~\ref{sec:appendix}. Numerical statements were
+computed and verified with \texttt{mpmath} \cite{mpmath} at 80
+significant digits; the values of all five constants of the Tahawus
+constellation agree digit-for-digit with the On-Line Encyclopedia of
+Integer Sequences \cite{a124930,a226568,a085846,a169862}. All figures
+were generated by the scripts reproduced in
+Appendix~\ref{sec:computational}.
+
+% =====================================================================
+\section{Background: Lambert \boldmath$W$\unboldmath, super-roots, and
+why they fail here}\label{sec:background}
+% =====================================================================
+
+The Lambert $W$ function \cite{corless} is defined by
+\begin{equation}\label{eq:W-def}
+    W(z)\,\ee^{W(z)} \;=\; z ,
+\end{equation}
+and it solves, in one stroke, every equation that can be massaged into
+the form (linear in $x$) $\times$ (exponential in $x$) $=$ constant: the
+tree function, delay equations, the solution of $x + \ee^{x} = a$ via
+$x = a - W(\ee^{a})$, and so on. Equations involving $x^{x}$ are a
+different genus. Their basic solver is the \emph{square super-root}
+\begin{equation}\label{eq:ssqrt}
+    \ssqrt(y) \;=\; \ee^{W(\ln y)} ,
+\end{equation}
+the inverse of $x \mapsto {}^{2}x := x^{x}$ (tetration of height two) on
+the branch $x \ge \ee^{-1}$; it satisfies $\ssqrt(y)^{\ssqrt(y)} = y$ and
+appears throughout the literature on iterated exponentials
+\cite{knoebel}. One level deeper, generalizations of $W$ handle
+equations in which several exponentials or several poles appear
+simultaneously \cite{mezobaricz}.
+
+Now try the super-quadratic \eqref{eq:superquad}, $x^{x} = bx + 1$.
+Taking logarithms gives $x \ln x = \ln(bx+1)$, and the left-hand side is
+inverted by the super-root: applying \eqref{eq:ssqrt} to $bx + 1$,
+\begin{equation}\label{eq:W-comp}
+    x \;=\; \ssqrt(bx + 1) \;=\; \ee^{W(\ln(bx + 1))} .
+\end{equation}
+This is exact but circular: the unknown $x$ sits inside the argument.
+Substituting \eqref{eq:W-comp} into itself produces the infinite
+composition displayed in the original post,
+\begin{equation}\label{eq:W-nest}
+    \Tah(b) \;=\; \ee^{W\big(\ln\big(b\,\ee^{W(\ln(b\,\ee^{W(\cdots)}+1))}+1\big)\big)},
+\end{equation}
+a formally self-consistent object but not a closed form. The failure is
+structural, not technical. In every equation solved by $W$ (or by its
+generalizations \cite{mezobaricz}) the unknown occurs in exactly two
+\emph{algebraically independent} places, one of which can be eliminated
+by a substitution that does not reintroduce it. In $x^{x} = bx + 1$ the
+unknown occurs as base, as exponent, \emph{and} linearly; eliminating the
+exponential pair $(x, x)$ forces the linear occurrence back into the
+argument. One can show that no finite expression built from $W$ by
+composition, arithmetic, and inversion solves the super-quadratic, and
+we conjecture (see Open Problem~\ref{op:closedform}) that the same is
+true for the finite combinations of all generalized Lambert functions.
+This is precisely the situation in which naming a new special function is
+justified; and since the equation $x^{x} = bx+1$ is the direct
+super-analogue of $x^{2} = bx + 1$, the new function deserves to be
+studied as systematically as the quadratic formula's relatives are.
+
+We record one exact reduction, occasionally useful, that exhibits the
+two-term structure of $f$. Writing
+\begin{equation}\label{eq:f-two-terms}
+    f(x) \;=\; \frac{x^{x} - 1}{x} \;=\; x^{x-1} - \frac{1}{x},
+\end{equation}
+the inverse relation $y = f(x)$ becomes
+\begin{equation}\label{eq:xxm1}
+    x^{x-1} \;=\; y + \frac{1}{x} ,
+\end{equation}
+so that $\Tah$ is ``the inverse of $x \mapsto x^{x-1}$, corrected by
+$1/x$''. Equation \eqref{eq:xxm1} is the key to the asymptotic analysis
+of Section~\ref{sec:asymptotics}: dropping the tiny correction $1/x$
+leaves the equation $x^{x-1} = y$, and the correction is what pushes the
+solution up by exactly $1$ in the limit.
